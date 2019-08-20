@@ -21,9 +21,33 @@
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 package main
 
-func main() {
+import (
+	"fmt"
+	"math"
+)
 
+func main() {
+	fmt.Println(toHex(-1))
 }
 func toHex(num int) string {
-
+	var numTmp uint32
+	if num < 0 {
+		numTmp = uint32(-num) ^ math.MaxUint32 + 1
+	} else {
+		numTmp = uint32(num)
+	}
+	if numTmp == 0 {
+		return "0"
+	}
+	number := []byte{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'}
+	s := make([]byte, 0)
+	for numTmp != 0 {
+		s = append(s, number[numTmp%16])
+		numTmp = numTmp / 16
+	}
+	res := make([]byte, 0)
+	for i := len(s) - 1; i >= 0; i-- {
+		res = append(res, s[i])
+	}
+	return string(res)
 }
