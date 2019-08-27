@@ -20,90 +20,122 @@ package main
 import "fmt"
 
 func main() {
-	list := new(MyLinkedList)
-	list.AddAtHead(3)
-	fmt.Println(list)
+	var list *MyLinkedList
+	l := Constructor()
+	list = &l
+	//list := new(MyLinkedList)
+	list.AddAtIndex(-1, 2)
+	list.AddAtHead(1)
+	list.AddAtTail(3)
+	list.AddAtIndex(-1, 2)
+	fmt.Println(list.Get(2))
+	list.DeleteAtIndex(-1)
+	fmt.Println(list.Get(1))
 }
 
 type MyLinkedList struct {
+	length int
+	head   *linked
+}
+type linked struct {
 	val  int
-	next *MyLinkedList
+	next *linked
 }
 
 /** Initialize your data structure here. */
 func Constructor() MyLinkedList {
 	var ll MyLinkedList
+	ll.length = 0
+	ll.head = nil
 	return ll
 }
 
 /** Get the value of the index-th node in the linked list. If the index is invalid, return -1. */
 func (this *MyLinkedList) Get(index int) int {
-	tmp := this
+	if index < 0 || index >= this.length {
+		return -1
+	}
+	tmp := this.head
 	for i := 1; i <= index; i++ {
-		if tmp.next != nil {
-			tmp = tmp.next
-		} else {
-			return -1
-		}
+		tmp = tmp.next
 	}
 	return tmp.val
 }
 
-/** Add a node of value val before the first element of the linked list. After the insertion, the new node will be the first node of the linked list. */
+/** Add a node of value val before the first element of the linked list. After the insertion,
+the new node will be the first node of the linked list. */
 func (this *MyLinkedList) AddAtHead(val int) {
-	fmt.Println(this)
-	tmp := this
-	this = new(MyLinkedList)
-	this.val = val
-	this.next = tmp
-	fmt.Println(this)
+	lk := new(linked)
+	lk.val = val
+	tmp := this.head
+	this.head = lk
+	lk.next = tmp
+	this.length++
 }
 
 /** Append a node of value val to the last element of the linked list. */
 func (this *MyLinkedList) AddAtTail(val int) {
-	tmp := this
+	//tmp := this
+	//for tmp.next != nil {
+	//	tmp = tmp.next
+	//}
+	//var l MyLinkedList
+	//l.val = val
+	//tmp.next = &l
+	tmp := this.head
 	for tmp.next != nil {
 		tmp = tmp.next
 	}
-	tmp.next = new(MyLinkedList)
-	tmp.next.val = val
+	var ls linked
+	ls.val = val
+	ls.next = nil
+	tmp.next = &ls
+	this.length++
 }
 
-/** Add a node of value val before the index-th node in the linked list. If index equals to the length of linked list, the node will be appended to the end of linked list. If index is greater than the length, the node will not be inserted. */
+/** Add a node of value val before the index-th node in the linked list. If index equals to the length of linked list,
+the node will be appended to the end of linked list.
+If index is greater than the length, the node will not be inserted. */
 func (this *MyLinkedList) AddAtIndex(index int, val int) {
-	tmp := this
+	if index > this.length {
+		return
+	}
 	if index <= 0 {
 		this.AddAtHead(val)
-	} else {
-		for i := 1; i < index; i++ {
-			if tmp.next == nil {
-				return
-			}
-			tmp = tmp.next
-		}
-		tmp2 := tmp.next
-		tmp.next = new(MyLinkedList)
-		tmp.next.val = val
-		tmp.next.next = tmp2
+		return
 	}
+	tmp := this.head
+	for i := 1; i < index; i++ {
+		tmp = tmp.next
+	}
+	next := tmp.next
+	var ls linked
+	ls.val = val
+	ls.next = next
+	tmp.next = &ls
+	this.length++
 }
 
 /** Delete the index-th node in the linked list, if the index is valid. */
 func (this *MyLinkedList) DeleteAtIndex(index int) {
-	tmp := this
-	if index == 0 {
-		this = this.next
+	//fmt.Println("length", this.length)
+	if index < 0 {
 		return
 	}
+	if index > this.length-1 {
+		return
+	}
+	if index == 0 {
+		this.head = this.head.next
+		this.length--
+		return
+	}
+	tmp := this.head
 	for i := 1; i < index; i++ {
-		if tmp.next == nil {
-			return
-		}
 		tmp = tmp.next
 	}
-	if tmp.next != nil {
-		tmp.next = tmp.next.next
-	}
+	tmp.next = tmp.next.next
+	this.length--
 }
 
 /**
@@ -115,3 +147,8 @@ func (this *MyLinkedList) DeleteAtIndex(index int) {
  * obj.AddAtIndex(index,val);
  * obj.DeleteAtIndex(index);
  */
+
+//func (this *MyLinkedList) Test() {
+//	tmp := this
+//	tmp.val = 88
+//}
