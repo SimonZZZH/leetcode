@@ -23,11 +23,22 @@ import (
 )
 
 func main() {
-	tmp := rand.Intn(99999)
-	//tmp := rand.Int()
-	fmt.Println(tmp * tmp)
-	fmt.Println(isPerfectSquare(tmp * tmp))
-	fmt.Println(isPerfectSquare(14))
+
+	for i := 0; i < 1000000; i++ {
+		tmp := rand.Intn(9999)
+		if tmp == 0 || tmp == 1 {
+			continue
+		}
+		if !isPerfectSquare(tmp * tmp) {
+			fmt.Println("error1", tmp)
+			return
+		}
+		if isPerfectSquare(tmp*tmp + 1) {
+			fmt.Println("error2", tmp)
+			return
+		}
+	}
+	fmt.Println("pass")
 }
 func isPerfectSquare(num int) bool {
 	if num < 0 {
@@ -46,7 +57,7 @@ func isPerfectSquare(num int) bool {
 	res := num / 2
 	for right > left+1 {
 		res = (right-left)/2 + left
-		fmt.Println(res)
+		//fmt.Println(res)
 		if num == res*res {
 			return true
 		}
